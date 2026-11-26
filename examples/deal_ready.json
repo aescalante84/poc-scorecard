@@ -1,0 +1,13 @@
+{
+  "name": "Harbor Foods (fictional): ready for a pilot",
+  "scores": {
+    "identify_pain": {"level": 3, "evidence": "Stockouts cost about $3M a year; figure agreed in the shared discovery summary dated Oct 14."},
+    "metrics": {"level": 3, "evidence": "Cut stockouts 20% vs. last year's baseline, measured weekly from the planning system; agreed in the pilot charter."},
+    "economic_buyer": {"level": 2, "evidence": "CFO joined the Oct 21 call and asked for a go/no-go readout after the pilot."},
+    "champion": {"level": 3, "evidence": "VP Supply Chain presented the case internally and introduced the CFO."},
+    "decision_criteria": {"level": 2, "evidence": "Buyer listed three criteria on the Oct 21 call; two are written in the charter."},
+    "decision_process": {"level": 2, "evidence": "Pilot readout, then CFO review, then procurement. Owners named; dates not yet fixed."},
+    "paper_process": {"level": 2, "evidence": "Security review takes about three weeks; reviewer identified."},
+    "competition": {"level": 2, "evidence": "Buyer named an in-house build as the alternative."}
+  }
+}
