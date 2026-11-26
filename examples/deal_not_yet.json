@@ -1,0 +1,13 @@
+{
+  "name": "Cedar Logistics (fictional): a demo request, nothing more",
+  "scores": {
+    "identify_pain": {"level": 1},
+    "metrics": {"level": 0},
+    "economic_buyer": {"level": 0},
+    "champion": {"level": 1},
+    "decision_criteria": {"level": 0},
+    "decision_process": {"level": 0},
+    "paper_process": {"level": 0},
+    "competition": {"level": 0}
+  }
+}
