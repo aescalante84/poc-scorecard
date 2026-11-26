@@ -1,0 +1,13 @@
+{
+  "name": "Lakeside Retail (fictional): enthusiastic, but not ready",
+  "scores": {
+    "identify_pain": {"level": 2, "evidence": "Ops lead describes manual reconciliation every week; no cost figure yet."},
+    "metrics": {"level": 1, "evidence": "Goal is to 'be more efficient'."},
+    "economic_buyer": {"level": 1, "evidence": "Named as the COO; no meeting yet."},
+    "champion": {"level": 2, "evidence": "Ops lead shares internal context and asked for a trial."},
+    "decision_criteria": {"level": 1},
+    "decision_process": {"level": 0},
+    "paper_process": {"level": 0},
+    "competition": {"level": 1}
+  }
+}
