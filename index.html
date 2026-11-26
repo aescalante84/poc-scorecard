@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>POC Readiness Scorecard: interactive</title>
+<style>
+  :root { --ink:#1b2430; --mute:#5b6675; --line:#dfe4ea; --bg:#f7f8fa; --card:#fff; --go:#1f6f5c; --fix:#b26a00; --not:#a63a3a; }
+  * { box-sizing:border-box; }
+  body { margin:0; font:16px/1.5 system-ui,-apple-system,Segoe UI,Roboto,sans-serif; color:var(--ink); background:var(--bg); }
+  main { max-width:1000px; margin:0 auto; padding:28px 20px 60px; }
+  h1 { font-size:26px; margin:0 0 4px; } .sub { color:var(--mute); margin:0 0 18px; }
+  .ex { display:flex; gap:8px; flex-wrap:wrap; margin-bottom:18px; align-items:center; }
+  .ex span { font-size:13px; color:var(--mute); }
+  .ex button { border:1px solid var(--line); background:#fff; border-radius:99px; padding:6px 14px; font:inherit; font-size:14px; cursor:pointer; }
+  .ex button:hover { border-color:var(--ink); }
+  .layout { display:grid; grid-template-columns:1.5fr 1fr; gap:20px; align-items:start; }
+  @media (max-width:800px){ .layout{ grid-template-columns:1fr; } .sticky{ position:static !important; } }
+  .card { background:var(--card); border:1px solid var(--line); border-radius:10px; padding:16px; }
+  .dim { padding:14px 0; border-top:1px solid var(--line); } .dim:first-child { border-top:0; padding-top:0; }
+  .dim h3 { font-size:15px; margin:0; display:flex; justify-content:space-between; gap:8px; }
+  .crit { font-size:11px; background:var(--ink); color:#fff; border-radius:99px; padding:1px 8px; white-space:nowrap; align-self:center; }
+  .ask { font-size:13px; color:var(--mute); margin:2px 0 8px; }
+  .lv { display:grid; grid-template-columns:repeat(4,1fr); gap:6px; }
+  .lv button { border:1px solid var(--line); background:#fff; border-radius:8px; padding:7px 6px; font:inherit; font-size:12px; text-align:left; cursor:pointer; color:var(--mute); line-height:1.3; }
+  .lv button b { display:block; color:var(--ink); font-size:13px; }
+  .lv button[aria-pressed=true] { border-color:var(--ink); background:var(--ink); color:#e8ecf1; } .lv button[aria-pressed=true] b { color:#fff; }
+  @media (max-width:560px){ .lv{ grid-template-columns:1fr 1fr; } }
+  textarea { width:100%; margin-top:8px; border:1px solid var(--line); border-radius:8px; padding:8px; font:inherit; font-size:14px; resize:vertical; min-height:38px; }
+  .warn { color:var(--fix); font-size:12px; margin-top:4px; }
+  .sticky { position:sticky; top:16px; }
+  .verdict { border-radius:10px; padding:16px; color:#fff; }
+  .verdict .v { font-size:30px; font-weight:750; line-height:1.1; } .verdict .s { opacity:.9; font-size:14px; }
+  .GO { background:var(--go); } .FIX { background:var(--fix); } .NOT { background:var(--not); }
+  h2 { font-size:13px; letter-spacing:.06em; text-transform:uppercase; color:var(--mute); margin:16px 0 6px; }
+  ul { margin:0; padding-left:18px; } li { margin:0 0 6px; font-size:14px; }
+  .foot { font-size:13px; color:var(--mute); margin-top:22px; } a { color:var(--go); }
+</style>
+</head>
+<body>
+<main>
+  <h1>POC Readiness Scorecard</h1>
+  <p class="sub">Should we start this POC, or fix something first? Score each dimension and add the evidence. A level 2 or 3 with no evidence is capped at 1.</p>
+  <div class="ex"><span>Load an example (all fictional):</span>
+    <button data-ex="ready">Harbor Foods</button><button data-ex="fix">Lakeside Retail</button><button data-ex="not">Cedar Logistics</button><button data-ex="blank">Blank</button></div>
+  <div class="layout">
+    <section class="card" id="dims"></section>
+    <aside class="sticky"><div class="verdict" id="verdict"></div><div class="card" style="margin-top:14px"><div id="blockers"></div><div id="warnings"></div><h2 style="margin-top:0">Next actions</h2><ul id="next"></ul></div></aside>
+  </div>
+  <p class="foot">Same rules as <code>scorecard.py</code>: evidence required for level 2+, critical dimensions (marked) must reach level 2 before a GO, and next actions list blockers first. The weights are my judgment, not fitted to win/loss data. By Alberto Escalante · <a href="https://github.com/aescalante84/poc-scorecard">source</a></p>
+</main>
+<script>
+const RUBRIC = {"name": "POC readiness scorecard", "version": "1.0", "scale": "0 = unknown, 1 = claimed but unverified, 2 = verified by someone on the buyer side, 3 = verified and documented or committed in writing", "go_threshold": 70, "not_yet_threshold": 40, "dimensions": [{"id": "identify_pain", "name": "Pain is identified and costed", "weight": 0.2, "critical": true, "ask": "What does the problem cost, who feels it, and what happens if nothing changes?", "levels": {"0": "No pain stated, or only feature interest", "1": "Pain mentioned, no cost or owner", "2": "Pain stated by the buyer with a cost estimate and an owner", "3": "Cost agreed in a shared document; consequence of inaction acknowledged"}}, {"id": "metrics", "name": "Success metrics agreed", "weight": 0.15, "critical": true, "ask": "Which numbers must move for this to be a success, and by how much?", "levels": {"0": "No metric", "1": "Generic goal (\"improve efficiency\")", "2": "One or more named metrics with a baseline", "3": "Metrics, baseline, target, and measurement method agreed in writing"}}, {"id": "economic_buyer", "name": "Economic buyer engaged", "weight": 0.15, "critical": true, "ask": "Who approves the spend, and have they heard the case from us or from the champion?", "levels": {"0": "Unknown", "1": "Identified by name, never met", "2": "Met, and supportive of the pilot", "3": "Committed budget or a dated decision path, in writing"}}, {"id": "champion", "name": "Champion with influence and a stake", "weight": 0.15, "critical": true, "ask": "Who wins personally if this works, and what have they done to move it forward?", "levels": {"0": "No one", "1": "A friendly contact with no influence", "2": "Influential, shares internal information, coaches us", "3": "Has sold it internally and made an introduction to the economic buyer"}}, {"id": "decision_criteria", "name": "Decision criteria known", "weight": 0.1, "critical": false, "ask": "What will they use to choose, and who set those criteria?", "levels": {"0": "Unknown", "1": "Assumed from the RFP or website", "2": "Stated by the buyer, partly written down", "3": "Written criteria, and the POC maps to them"}}, {"id": "decision_process", "name": "Decision process mapped", "weight": 0.1, "critical": false, "ask": "What are the steps from POC result to signature, with owners and dates?", "levels": {"0": "Unknown", "1": "A vague timeline", "2": "Steps named, owners known", "3": "Steps, owners, and dates agreed, including who can say no"}}, {"id": "paper_process", "name": "Paper and security process known", "weight": 0.05, "critical": false, "ask": "Security review, legal, procurement: how long does each take, and has it started?", "levels": {"0": "Unknown", "1": "Assumed", "2": "Reviewer and typical duration known", "3": "Review already started or pre-approved, with a date"}}, {"id": "competition", "name": "Alternatives understood", "weight": 0.1, "critical": false, "ask": "What else are they considering, including doing nothing or building in-house?", "levels": {"0": "Unknown", "1": "Assumed", "2": "Alternatives named by the buyer", "3": "Alternatives known and our differentiation tested with the buyer"}}]};
+const EXAMPLES = {"ready": {"name": "Harbor Foods (fictional): ready for a pilot", "scores": {"identify_pain": {"level": 3, "evidence": "Stockouts cost about $3M a year; figure agreed in the shared discovery summary dated Oct 14."}, "metrics": {"level": 3, "evidence": "Cut stockouts 20% vs. last year's baseline, measured weekly from the planning system; agreed in the pilot charter."}, "economic_buyer": {"level": 2, "evidence": "CFO joined the Oct 21 call and asked for a go/no-go readout after the pilot."}, "champion": {"level": 3, "evidence": "VP Supply Chain presented the case internally and introduced the CFO."}, "decision_criteria": {"level": 2, "evidence": "Buyer listed three criteria on the Oct 21 call; two are written in the charter."}, "decision_process": {"level": 2, "evidence": "Pilot readout, then CFO review, then procurement. Owners named; dates not yet fixed."}, "paper_process": {"level": 2, "evidence": "Security review takes about three weeks; reviewer identified."}, "competition": {"level": 2, "evidence": "Buyer named an in-house build as the alternative."}}}, "fix": {"name": "Lakeside Retail (fictional): enthusiastic, but not ready", "scores": {"identify_pain": {"level": 2, "evidence": "Ops lead describes manual reconciliation every week; no cost figure yet."}, "metrics": {"level": 1, "evidence": "Goal is to 'be more efficient'."}, "economic_buyer": {"level": 1, "evidence": "Named as the COO; no meeting yet."}, "champion": {"level": 2, "evidence": "Ops lead shares internal context and asked for a trial."}, "decision_criteria": {"level": 1}, "decision_process": {"level": 0}, "paper_process": {"level": 0}, "competition": {"level": 1}}}, "not": {"name": "Cedar Logistics (fictional): a demo request, nothing more", "scores": {"identify_pain": {"level": 1}, "metrics": {"level": 0}, "economic_buyer": {"level": 0}, "champion": {"level": 1}, "decision_criteria": {"level": 0}, "decision_process": {"level": 0}, "paper_process": {"level": 0}, "competition": {"level": 0}}}};
+
+function evaluate(rubric, deal) {
+  const dims = rubric.dimensions, warnings = [], rows = [], given = deal.scores || {};
+  let total = 0;
+  for (const d of dims) {
+    const e = given[d.id] || {};
+    let level = parseInt(e.level || 0, 10);
+    const evidence = (e.evidence || '').trim();
+    if (level >= 2 && !evidence) { warnings.push(d.name + ': level ' + level + ' claimed without evidence, capped at 1'); level = 1; }
+    const score = Math.round(level / 3 * 100);
+    total += score * d.weight;
+    rows.push({id:d.id, name:d.name, level, score, critical:d.critical, ask:d.ask});
+  }
+  const overall = Math.round(total);
+  const blockers = rows.filter(r => r.critical && r.level < 2);
+  let verdict;
+  if (blockers.length) verdict = 'FIX FIRST';
+  else if (overall >= rubric.go_threshold) verdict = 'GO';
+  else if (overall < rubric.not_yet_threshold) verdict = 'NOT YET';
+  else verdict = 'FIX FIRST';
+  if (overall < rubric.not_yet_threshold && blockers.length) verdict = 'NOT YET';
+  const weakest = rows.filter(r => r.level < 3).sort((a, b) => {
+    const ab = (a.critical && a.level < 2) ? 0 : 1, bb = (b.critical && b.level < 2) ? 0 : 1;
+    return ab - bb || a.score - b.score;
+  }).slice(0, 3);
+  return {overall, verdict, blockers: blockers.map(b => b.name), next: weakest, warnings};
+}
+
+if (typeof document === 'undefined') { module.exports = { evaluate, RUBRIC, EXAMPLES }; }
+else {
+  const $ = id => document.getElementById(id);
+  let state = {};
+  const esc = s => String(s).replace(/[&<>"]/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+  function load(name) {
+    state = {};
+    const src = name === 'blank' ? {} : EXAMPLES[name].scores;
+    RUBRIC.dimensions.forEach(d => { const s = src[d.id] || {}; state[d.id] = {level: s.level || 0, evidence: s.evidence || ''}; });
+    build(); render();
+  }
+  function build() {
+    $('dims').innerHTML = RUBRIC.dimensions.map(d => '<div class="dim" data-id="' + d.id + '"><h3><span>' + esc(d.name) + '</span>' + (d.critical ? '<span class="crit">critical: needs 2+</span>' : '') + '</h3><div class="ask">' + esc(d.ask) + '</div><div class="lv">' +
+      [0,1,2,3].map(l => '<button data-l="' + l + '"><b>' + l + '</b>' + esc(d.levels[l]) + '</button>').join('') + '</div><textarea rows="1" placeholder="Evidence: who said it, when. Required for level 2+."></textarea><div class="warn" hidden></div></div>').join('');
+    document.querySelectorAll('.dim').forEach(el => {
+      const id = el.dataset.id;
+      el.querySelectorAll('.lv button').forEach(b => b.addEventListener('click', () => { state[id].level = +b.dataset.l; render(); }));
+      el.querySelector('textarea').addEventListener('input', e => { state[id].evidence = e.target.value; render(true); });
+    });
+  }
+  function render(typing) {
+    const r = evaluate(RUBRIC, {scores: state});
+    document.querySelectorAll('.dim').forEach(el => {
+      const id = el.dataset.id, s = state[id], ta = el.querySelector('textarea');
+      el.querySelectorAll('.lv button').forEach(b => b.setAttribute('aria-pressed', +b.dataset.l === s.level));
+      if (!typing) ta.value = s.evidence;
+      const w = el.querySelector('.warn'), capped = s.level >= 2 && !s.evidence.trim();
+      w.hidden = !capped; w.textContent = capped ? 'No evidence yet: scored as level 1.' : '';
+    });
+    const cls = r.verdict === 'GO' ? 'GO' : r.verdict === 'NOT YET' ? 'NOT' : 'FIX';
+    $('verdict').className = 'verdict ' + cls;
+    $('verdict').innerHTML = '<div class="v">' + r.verdict + '</div><div class="s">' + r.overall + ' / 100</div>';
+    $('blockers').innerHTML = r.blockers.length ? '<h2 style="margin-top:0">Blockers</h2><ul>' + r.blockers.map(b => '<li>' + esc(b) + '</li>').join('') + '</ul>' : '<h2 style="margin-top:0">Blockers</h2><div style="font-size:14px">None. Every critical dimension is at level 2 or higher.</div>';
+    $('warnings').innerHTML = r.warnings.length ? '<h2>Warnings</h2><ul>' + r.warnings.map(w => '<li>' + esc(w) + '</li>').join('') + '</ul>' : '';
+    $('next').innerHTML = r.next.length ? r.next.map(n => '<li><b>' + esc(n.name) + '</b><br>' + esc(n.ask) + '</li>').join('') : '<li>Nothing left to raise.</li>';
+  }
+  document.querySelectorAll('.ex button').forEach(b => b.addEventListener('click', () => load(b.dataset.ex)));
+  load('fix');
+}
+</script>
+</body>
+</html>
