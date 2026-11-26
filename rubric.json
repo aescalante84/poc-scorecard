@@ -1,0 +1,113 @@
+{
+  "name": "POC readiness scorecard",
+  "version": "1.0",
+  "scale": "0 = unknown, 1 = claimed but unverified, 2 = verified by someone on the buyer side, 3 = verified and documented or committed in writing",
+  "go_threshold": 70,
+  "not_yet_threshold": 40,
+  "dimensions": [
+    {
+      "id": "identify_pain",
+      "name": "Pain is identified and costed",
+      "weight": 0.20,
+      "critical": true,
+      "ask": "What does the problem cost, who feels it, and what happens if nothing changes?",
+      "levels": {
+        "0": "No pain stated, or only feature interest",
+        "1": "Pain mentioned, no cost or owner",
+        "2": "Pain stated by the buyer with a cost estimate and an owner",
+        "3": "Cost agreed in a shared document; consequence of inaction acknowledged"
+      }
+    },
+    {
+      "id": "metrics",
+      "name": "Success metrics agreed",
+      "weight": 0.15,
+      "critical": true,
+      "ask": "Which numbers must move for this to be a success, and by how much?",
+      "levels": {
+        "0": "No metric",
+        "1": "Generic goal (\"improve efficiency\")",
+        "2": "One or more named metrics with a baseline",
+        "3": "Metrics, baseline, target, and measurement method agreed in writing"
+      }
+    },
+    {
+      "id": "economic_buyer",
+      "name": "Economic buyer engaged",
+      "weight": 0.15,
+      "critical": true,
+      "ask": "Who approves the spend, and have they heard the case from us or from the champion?",
+      "levels": {
+        "0": "Unknown",
+        "1": "Identified by name, never met",
+        "2": "Met, and supportive of the pilot",
+        "3": "Committed budget or a dated decision path, in writing"
+      }
+    },
+    {
+      "id": "champion",
+      "name": "Champion with influence and a stake",
+      "weight": 0.15,
+      "critical": true,
+      "ask": "Who wins personally if this works, and what have they done to move it forward?",
+      "levels": {
+        "0": "No one",
+        "1": "A friendly contact with no influence",
+        "2": "Influential, shares internal information, coaches us",
+        "3": "Has sold it internally and made an introduction to the economic buyer"
+      }
+    },
+    {
+      "id": "decision_criteria",
+      "name": "Decision criteria known",
+      "weight": 0.10,
+      "critical": false,
+      "ask": "What will they use to choose, and who set those criteria?",
+      "levels": {
+        "0": "Unknown",
+        "1": "Assumed from the RFP or website",
+        "2": "Stated by the buyer, partly written down",
+        "3": "Written criteria, and the POC maps to them"
+      }
+    },
+    {
+      "id": "decision_process",
+      "name": "Decision process mapped",
+      "weight": 0.10,
+      "critical": false,
+      "ask": "What are the steps from POC result to signature, with owners and dates?",
+      "levels": {
+        "0": "Unknown",
+        "1": "A vague timeline",
+        "2": "Steps named, owners known",
+        "3": "Steps, owners, and dates agreed, including who can say no"
+      }
+    },
+    {
+      "id": "paper_process",
+      "name": "Paper and security process known",
+      "weight": 0.05,
+      "critical": false,
+      "ask": "Security review, legal, procurement: how long does each take, and has it started?",
+      "levels": {
+        "0": "Unknown",
+        "1": "Assumed",
+        "2": "Reviewer and typical duration known",
+        "3": "Review already started or pre-approved, with a date"
+      }
+    },
+    {
+      "id": "competition",
+      "name": "Alternatives understood",
+      "weight": 0.10,
+      "critical": false,
+      "ask": "What else are they considering, including doing nothing or building in-house?",
+      "levels": {
+        "0": "Unknown",
+        "1": "Assumed",
+        "2": "Alternatives named by the buyer",
+        "3": "Alternatives known and our differentiation tested with the buyer"
+      }
+    }
+  ]
+}
